@@ -1,0 +1,78 @@
+{% extends "admin/base.html" %}
+{% block title %}Admin Users{% endblock %}
+{% block page_title %}Admin User Management{% endblock %}
+{% block admin_content %}
+
+<div class="d-flex justify-content-end mb-3">
+  <button class="btn btn-primary-industrial" data-bs-toggle="modal" data-bs-target="#addAdminModal"><i class="fa-solid fa-plus me-1"></i> Add Admin</button>
+</div>
+
+<div class="card-industrial">
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-industrial align-middle">
+        <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Created</th><th class="text-end">Actions</th></tr></thead>
+        <tbody>
+          {% for a in admins %}
+          <tr>
+            <td class="fw-semibold">{{ a.name }}</td>
+            <td>{{ a.email }}</td>
+            <td>{{ a.role }}</td>
+            <td><span class="status-badge {{ 'status-active' if a.status=='Active' else 'status-inactive' }}">{{ a.status }}</span></td>
+            <td class="small">{{ a.created_at.strftime('%d %b %Y') if a.created_at else '' }}</td>
+            <td class="text-end">
+              <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#pwdModal{{ a.id }}"><i class="fa-solid fa-key"></i></button>
+              <form action="{{ url_for('admin.admins_toggle', item_id=a.id) }}" method="POST" class="d-inline">
+                <button class="btn btn-sm btn-outline-warning" type="submit"><i class="fa-solid fa-power-off"></i></button>
+              </form>
+              <form action="{{ url_for('admin.admins_delete', item_id=a.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this admin?');">
+                <button class="btn btn-sm btn-outline-danger" type="submit"><i class="fa-solid fa-trash"></i></button>
+              </form>
+            </td>
+          </tr>
+
+          <div class="modal fade" id="pwdModal{{ a.id }}" tabindex="-1">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <form action="{{ url_for('admin.admins_change_password', item_id=a.id) }}" method="POST">
+                  <div class="modal-header"><h5 class="modal-title">Change Password &mdash; {{ a.name }}</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+                  <div class="modal-body">
+                    <label class="form-label">New Password</label>
+                    <input type="password" name="password" class="form-control" minlength="6" required>
+                  </div>
+                  <div class="modal-footer"><button class="btn btn-primary-industrial" type="submit">Update Password</button></div>
+                </form>
+              </div>
+            </div>
+          </div>
+          {% else %}
+          <tr><td colspan="6" class="text-center text-muted">No admin users found.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="addAdminModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form action="{{ url_for('admin.admins_add') }}" method="POST">
+        <div class="modal-header"><h5 class="modal-title">Add Admin User</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+        <div class="modal-body">
+          <div class="mb-3"><label class="form-label">Name</label><input type="text" name="name" class="form-control" required></div>
+          <div class="mb-3"><label class="form-label">Email</label><input type="email" name="email" class="form-control" required></div>
+          <div class="mb-3"><label class="form-label">Password</label><input type="password" name="password" class="form-control" minlength="6" required></div>
+          <div class="mb-3"><label class="form-label">Role</label>
+            <select name="role" class="form-select">
+              <option value="Admin">Admin</option>
+              <option value="Super Admin">Super Admin</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer"><button class="btn btn-primary-industrial" type="submit">Add Admin</button></div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <div class="eyebrow animate-in">Trusted Since Years &mdash; Pan India Service</div>
+      <h1 class="animate-in delay-1">{{ settings.hero_heading|default('AMAN ENTERPRISE') }}</h1>
+      <h2 class="animate-in delay-1">{{ settings.hero_subheading|default('Reliable Crane & Heavy Machinery Solutions') }}</h2>
+      <p class="animate-in delay-2">{{ settings.hero_description|default('') }}</p>
+      <div class="animate-in delay-3">
+        <a href="{{ url_for('public.contact') }}" class="btn btn-primary-industrial me-2 mb-2">Get a Quote</a>
+        <a href="{{ url_for('public.services') }}" class="btn btn-outline-industrial mb-2">Explore Our Services</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="section-padding">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <div class="about-img-wrap" style="height:420px;">
+          <img src="https://images.unsplash.com/photo-1541976590-713941681591?q=80&w=1000" alt="Heavy crane at work">
+          <div class="about-stat-badge">
+            <div class="fs-4">{{ settings.years_experience|default('10+') }}</div>
+            <div style="font-size:0.8rem;">Years Experience</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <span class="section-tag">About Us</span>
+        <h2 class="section-title">About {{ settings.company_name|default('AMAN ENTERPRISE') }}</h2>
+        <p class="text-muted">{{ settings.about_content|default('') }}</p>
+        <ul class="list-unstyled about-check row">
+          <li class="col-md-6">Reliable equipment</li>
+          <li class="col-md-6">Professional service</li>
+          <li class="col-md-6">Safety-focused operations</li>
+          <li class="col-md-6">Experienced team</li>
+          <li class="col-md-6">Timely support</li>
+          <li class="col-md-6">Customer satisfaction</li>
+        </ul>
+        <a href="{{ url_for('public.about') }}" class="btn btn-primary-industrial mt-2">Learn More</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="section-padding bg-light-gray">
+  <div class="container">
+    <div class="text-center mx-auto mb-5" style="max-width:640px;">
+      <span class="section-tag">What We Offer</span>
+      <h2 class="section-title">Our Services</h2>
+      <p class="section-subtitle mx-auto">Comprehensive crane and heavy machinery solutions built around safety, reliability and professional execution.</p>
+    </div>
+    <div class="row g-4">
+      {% for s in services %}
+      <div class="col-lg-4 col-md-6">
+        <div class="card-industrial">
+          <div class="card-img-wrap">
+            <img src="{{ s.image or 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=800' }}" alt="{{ s.name }}">
+          </div>
+          <div class="card-icon-badge"><i class="{{ s.icon or 'fa-solid fa-gears' }}"></i></div>
+          <div class="card-body">
+            <h5>{{ s.name }}</h5>
+            <p class="text-muted small">{{ s.description }}</p>
+            <a href="{{ url_for('public.services') }}" class="card-link-arrow">Learn More <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <p class="text-center text-muted">Services will appear here once added by the admin.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- EQUIPMENT -->
+<section class="section-padding">
+  <div class="container">
+    <div class="text-center mx-auto mb-5" style="max-width:640px;">
+      <span class="section-tag">Our Fleet</span>
+      <h2 class="section-title">Equipment & Machinery</h2>
+      <p class="section-subtitle mx-auto">A well-maintained fleet of cranes and heavy machinery ready for deployment.</p>
+    </div>
+    <div class="row g-4">
+      {% for e in equipment %}
+      <div class="col-lg-4 col-md-6">
+        <div class="card-industrial">
+          <div class="card-img-wrap">
+            <img src="{{ e.image or 'https://images.unsplash.com/photo-1581093458791-9d42cc9e0b6c?q=80&w=800' }}" alt="{{ e.name }}">
+          </div>
+          <div class="card-body pt-3">
+            <span class="badge-category mb-2 d-inline-block">{{ e.category }}</span>
+            <h5>{{ e.name }}</h5>
+            <p class="text-muted small">{{ e.description }}</p>
+            <a href="{{ url_for('public.equipment') }}" class="card-link-arrow">Enquire Now <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <p class="text-center text-muted">Equipment listings will appear here once added by the admin.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- WHY CHOOSE US -->
+<section id="why-choose-us" class="section-padding bg-light-gray">
+  <div class="container">
+    <div class="text-center mx-auto mb-5" style="max-width:640px;">
+      <span class="section-tag">Why Choose Us</span>
+      <h2 class="section-title">Built On Trust & Reliability</h2>
+    </div>
+    <div class="row g-4">
+      <div class="col-lg-4 col-md-6">
+        <div class="feature-box"><div class="feature-icon"><i class="fa-solid fa-truck-crane"></i></div><h5>Reliable Equipment</h5><p class="text-muted small">Well-maintained and dependable machinery.</p></div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="feature-box"><div class="feature-icon"><i class="fa-solid fa-user-tie"></i></div><h5>Experienced Team</h5><p class="text-muted small">Professional support for different machinery requirements.</p></div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="feature-box"><div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div><h5>Safety First</h5><p class="text-muted small">Safety-focused approach to equipment operations.</p></div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="feature-box"><div class="feature-icon"><i class="fa-solid fa-clock"></i></div><h5>Timely Service</h5><p class="text-muted small">Focus on responsive and timely customer support.</p></div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="feature-box"><div class="feature-icon"><i class="fa-solid fa-headset"></i></div><h5>Professional Support</h5><p class="text-muted small">Customer-oriented service throughout the project.</p></div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="feature-box"><div class="feature-icon"><i class="fa-solid fa-sliders"></i></div><h5>Flexible Solutions</h5><p class="text-muted small">Solutions based on project requirements.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="section-padding stats-section">
+  <div class="container">
+    <div class="row text-center g-4">
+      <div class="col-md-3 col-6">
+        <div class="stat-number" data-count="{{ settings.years_experience|default('10+') }}">0</div>
+        <div class="stat-label">Years Experience</div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="stat-number" data-count="{{ settings.total_projects|default('100+') }}">0</div>
+        <div class="stat-label">Projects</div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="stat-number" data-count="{{ settings.equipment_units|default('50+') }}">0</div>
+        <div class="stat-label">Equipment Units</div>
+      </div>
+      <div class="col-md-3 col-6">
+        <div class="stat-number" data-count="{{ settings.customer_focus|default('100%') }}">0</div>
+        <div class="stat-label">Customer Focus</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="section-padding">
+  <div class="container">
+    <div class="text-center mx-auto mb-5" style="max-width:640px;">
+      <span class="section-tag">Our Work</span>
+      <h2 class="section-title">Featured Projects</h2>
+    </div>
+    <div class="row g-4">
+      {% for p in projects %}
+      <div class="col-lg-4 col-md-6">
+        <div class="project-card">
+          <img src="{{ p.image or 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=800' }}" alt="{{ p.name }}">
+          <div class="project-overlay">
+            <span class="badge-category mb-2 d-inline-block" style="width:fit-content;">{{ p.project_type }}</span>
+            <h5 class="text-white mb-1">{{ p.name }}</h5>
+            <small><i class="fa-solid fa-location-dot me-1"></i>{{ p.location }}</small>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <p class="text-center text-muted">Projects will appear here once added by the admin.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section-padding bg-light-gray">
+  <div class="container">
+    <div class="text-center mx-auto mb-5" style="max-width:640px;">
+      <span class="section-tag">Testimonials</span>
+      <h2 class="section-title">What Our Clients Say</h2>
+    </div>
+    <div class="row g-4">
+      {% for t in testimonials %}
+      <div class="col-lg-4">
+        <div class="testimonial-card">
+          <div class="rating-stars mb-2">
+            {% for i in range(t.rating) %}<i class="fa-solid fa-star"></i>{% endfor %}
+          </div>
+          <p class="text-muted">"{{ t.testimonial }}"</p>
+          <div class="d-flex align-items-center gap-2 mt-3">
+            <div class="testimonial-avatar">{{ t.customer_name[0] }}</div>
+            <div>
+              <div class="fw-bold">{{ t.customer_name }}</div>
+              <small class="text-muted">{{ t.company }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <p class="text-center text-muted">Testimonials will appear here once added by the admin.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section-padding">
+  <div class="container">
+    <div class="cta-banner text-center">
+      <h2 class="text-white">Need Reliable Crane & Heavy Machinery Services?</h2>
+      <p class="text-white-50 mb-4">Contact {{ settings.company_name|default('AMAN ENTERPRISE') }} for professional machinery and equipment solutions.</p>
+      <a href="{{ url_for('public.contact') }}" class="btn btn-primary-industrial me-2 mb-2">Contact Us</a>
+      <a href="{{ url_for('public.contact') }}" class="btn btn-outline-industrial mb-2">Request a Quote</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

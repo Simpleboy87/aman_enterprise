@@ -1,0 +1,65 @@
+{% extends "admin/base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block admin_content %}
+
+<div class="row g-3 mb-4">
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card"><div class="icon-box" style="background:#1657c9;"><i class="fa-solid fa-envelope-open-text"></i></div>
+      <div><div class="value">{{ stats.total_enquiries }}</div><div class="label">Total Enquiries</div></div></div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card"><div class="icon-box" style="background:#d98c00;"><i class="fa-solid fa-bell"></i></div>
+      <div><div class="value">{{ stats.new_enquiries }}</div><div class="label">New Enquiries</div></div></div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card"><div class="icon-box" style="background:#1a7a3e;"><i class="fa-solid fa-gears"></i></div>
+      <div><div class="value">{{ stats.total_services }}</div><div class="label">Total Services</div></div></div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card"><div class="icon-box" style="background:#0d1b2a;"><i class="fa-solid fa-truck-crane"></i></div>
+      <div><div class="value">{{ stats.total_equipment }}</div><div class="label">Total Equipment</div></div></div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card"><div class="icon-box" style="background:#6a2fc9;"><i class="fa-solid fa-diagram-project"></i></div>
+      <div><div class="value">{{ stats.total_projects }}</div><div class="label">Total Projects</div></div></div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card"><div class="icon-box" style="background:#b3261e;"><i class="fa-solid fa-star"></i></div>
+      <div><div class="value">{{ stats.total_testimonials }}</div><div class="label">Total Testimonials</div></div></div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card"><div class="icon-box" style="background:#374151;"><i class="fa-solid fa-user-shield"></i></div>
+      <div><div class="value">{{ stats.total_admins }}</div><div class="label">Admin Users</div></div></div>
+  </div>
+</div>
+
+<div class="card-industrial">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="mb-0">Recent Enquiries</h5>
+      <a href="{{ url_for('admin.enquiries_list') }}" class="card-link-arrow">View All <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-industrial">
+        <thead><tr><th>Name</th><th>Phone</th><th>Service</th><th>Status</th><th>Date</th><th></th></tr></thead>
+        <tbody>
+          {% for e in recent_enquiries %}
+          <tr>
+            <td>{{ e.name }}</td>
+            <td>{{ e.phone }}</td>
+            <td>{{ e.service_required or '-' }}</td>
+            <td><span class="status-badge status-{{ e.status|lower|replace(' ','-')|replace('progress','progress') }}">{{ e.status }}</span></td>
+            <td>{{ e.created_at.strftime('%d %b %Y') if e.created_at else '' }}</td>
+            <td><a href="{{ url_for('admin.enquiries_view', item_id=e.id) }}" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-eye"></i></a></td>
+          </tr>
+          {% else %}
+          <tr><td colspan="6" class="text-center text-muted">No enquiries yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

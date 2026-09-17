@@ -1,0 +1,41 @@
+{% extends "admin/base.html" %}
+{% block title %}Enquiry Detail{% endblock %}
+{% block page_title %}Enquiry Detail{% endblock %}
+{% block admin_content %}
+
+<a href="{{ url_for('admin.enquiries_list') }}" class="card-link-arrow d-inline-block mb-3"><i class="fa-solid fa-arrow-left me-1"></i> Back to Enquiries</a>
+
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="card-industrial">
+      <div class="card-body">
+        <h5 class="mb-4">Enquiry #{{ enquiry.id }}</h5>
+        <div class="row g-3">
+          <div class="col-md-6"><small class="text-muted d-block">Full Name</small><div class="fw-semibold">{{ enquiry.name }}</div></div>
+          <div class="col-md-6"><small class="text-muted d-block">Phone</small><div class="fw-semibold">{{ enquiry.phone }}</div></div>
+          <div class="col-md-6"><small class="text-muted d-block">Email</small><div class="fw-semibold">{{ enquiry.email or '-' }}</div></div>
+          <div class="col-md-6"><small class="text-muted d-block">Company</small><div class="fw-semibold">{{ enquiry.company or '-' }}</div></div>
+          <div class="col-md-6"><small class="text-muted d-block">Service Required</small><div class="fw-semibold">{{ enquiry.service_required or '-' }}</div></div>
+          <div class="col-md-6"><small class="text-muted d-block">Submitted</small><div class="fw-semibold">{{ enquiry.created_at.strftime('%d %b %Y, %I:%M %p') if enquiry.created_at else '' }}</div></div>
+          <div class="col-12"><small class="text-muted d-block">Message</small><p class="mb-0">{{ enquiry.message }}</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card-industrial">
+      <div class="card-body">
+        <h6 class="mb-3">Update Status</h6>
+        <form method="POST" action="{{ url_for('admin.enquiries_status', item_id=enquiry.id) }}">
+          <select name="status" class="form-select mb-3">
+            {% for s in ['New','Contacted','In Progress','Completed','Cancelled'] %}
+            <option value="{{ s }}" {% if enquiry.status==s %}selected{% endif %}>{{ s }}</option>
+            {% endfor %}
+          </select>
+          <button class="btn btn-primary-industrial w-100" type="submit">Update Status</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

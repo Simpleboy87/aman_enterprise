@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Our Projects | {{ settings.company_name|default('AMAN ENTERPRISE') }}{% endblock %}
+{% block content %}
+<section class="page-header">
+  <div class="container">
+    <h1>Our Projects</h1>
+    <div class="breadcrumb-industrial"><a href="{{ url_for('public.index') }}">Home</a> <span class="mx-1">/</span> <span>Projects</span></div>
+  </div>
+</section>
+
+<section class="section-padding">
+  <div class="container">
+    <div class="row g-4">
+      {% for p in projects %}
+      <div class="col-lg-4 col-md-6">
+        <div class="project-card mb-3">
+          <img src="{{ p.image or 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=800' }}" alt="{{ p.name }}">
+          <div class="project-overlay">
+            <span class="badge-category mb-2 d-inline-block" style="width:fit-content;">{{ p.project_type }}</span>
+            <h5 class="text-white mb-1">{{ p.name }}</h5>
+            <small><i class="fa-solid fa-location-dot me-1"></i>{{ p.location }} &middot; {{ p.project_date.strftime('%b %Y') if p.project_date else '' }}</small>
+          </div>
+        </div>
+        <p class="text-muted small">{{ p.description }}</p>
+      </div>
+      {% else %}
+      <p class="text-center text-muted">No projects available at this time.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Equipment & Machinery | {{ settings.company_name|default('AMAN ENTERPRISE') }}{% endblock %}
+{% block content %}
+<section class="page-header">
+  <div class="container">
+    <h1>Equipment & Machinery</h1>
+    <div class="breadcrumb-industrial"><a href="{{ url_for('public.index') }}">Home</a> <span class="mx-1">/</span> <span>Equipment</span></div>
+  </div>
+</section>
+
+<section class="section-padding">
+  <div class="container">
+    <div class="d-flex flex-wrap gap-2 justify-content-center mb-5">
+      <a href="{{ url_for('public.equipment') }}" class="btn btn-sm {{ 'btn-primary-industrial' if not active_category else 'btn-outline-industrial text-dark border-secondary' }}">All</a>
+      {% for c in categories %}
+      <a href="{{ url_for('public.equipment', category=c.category) }}" class="btn btn-sm {{ 'btn-primary-industrial' if active_category==c.category else 'btn-outline-industrial text-dark border-secondary' }}">{{ c.category }}</a>
+      {% endfor %}
+    </div>
+
+    <div class="row g-4">
+      {% for e in equipment %}
+      <div class="col-lg-4 col-md-6">
+        <div class="card-industrial">
+          <div class="card-img-wrap">
+            <img src="{{ e.image or 'https://images.unsplash.com/photo-1581093458791-9d42cc9e0b6c?q=80&w=800' }}" alt="{{ e.name }}">
+          </div>
+          <div class="card-body pt-3">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <span class="badge-category">{{ e.category }}</span>
+              <span class="badge-availability {{ 'badge-available' if e.availability=='Available' else ('badge-booked' if e.availability=='Booked' else 'badge-maintenance') }}">{{ e.availability }}</span>
+            </div>
+            <h5>{{ e.name }}</h5>
+            <p class="text-muted small">{{ e.description }}</p>
+            <p class="small text-muted mb-3"><i class="fa-solid fa-list-check text-accent me-1"></i>{{ e.specifications }}</p>
+            <a href="{{ url_for('public.contact') }}?service={{ e.name|urlencode }}" class="btn btn-primary-industrial w-100">Enquire Now</a>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <p class="text-center text-muted">No equipment available in this category.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

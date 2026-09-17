@@ -1,0 +1,58 @@
+{% extends "admin/base.html" %}
+{% block title %}Enquiries{% endblock %}
+{% block page_title %}Manage Enquiries{% endblock %}
+{% block admin_content %}
+
+<div class="card-industrial mb-3">
+  <div class="card-body">
+    <form method="GET" class="row g-2 align-items-end">
+      <div class="col-md-5">
+        <label class="form-label">Search</label>
+        <input type="text" name="q" class="form-control" placeholder="Name, phone, email or company" value="{{ search }}">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Status</label>
+        <select name="status" class="form-select">
+          <option value="">All</option>
+          {% for s in ['New','Contacted','In Progress','Completed','Cancelled'] %}
+          <option value="{{ s }}" {% if status_filter==s %}selected{% endif %}>{{ s }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <button class="btn btn-primary-industrial w-100" type="submit"><i class="fa-solid fa-filter me-1"></i> Filter</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card-industrial">
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-industrial align-middle">
+        <thead><tr><th>Name</th><th>Phone</th><th>Email</th><th>Service</th><th>Status</th><th>Date</th><th class="text-end">Actions</th></tr></thead>
+        <tbody>
+          {% for e in enquiries %}
+          <tr>
+            <td class="fw-semibold">{{ e.name }}</td>
+            <td>{{ e.phone }}</td>
+            <td>{{ e.email or '-' }}</td>
+            <td>{{ e.service_required or '-' }}</td>
+            <td><span class="status-badge status-{{ e.status|lower|replace(' ','') }}">{{ e.status }}</span></td>
+            <td class="small">{{ e.created_at.strftime('%d %b %Y') if e.created_at else '' }}</td>
+            <td class="text-end">
+              <a href="{{ url_for('admin.enquiries_view', item_id=e.id) }}" class="btn btn-sm btn-outline-secondary"><i class="fa-solid fa-eye"></i></a>
+              <form action="{{ url_for('admin.enquiries_delete', item_id=e.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this enquiry?');">
+                <button class="btn btn-sm btn-outline-danger" type="submit"><i class="fa-solid fa-trash"></i></button>
+              </form>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="7" class="text-center text-muted">No enquiries found.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
