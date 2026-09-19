@@ -124,7 +124,7 @@ ON DUPLICATE KEY UPDATE setting_key = setting_key;
 -- Default login: admin@amanenterprise.in / Admin@123
 -- (password_hash generated with werkzeug.security.generate_password_hash)
 INSERT INTO admins (name, email, password_hash, role, status) VALUES
-('Aman Sharma', 'admin@amanenterprise.in', 'scrypt:32768:8:1$8110c0Zdn1pbxEBc$95a390ffa0fc5c3c8c17f9108adf627f1cbe67e2d594cf01674b213877f381ae31d6fac13e2749d8441ad612307fa685e7d1e9add9101c14433a9081f79eb9d7', 'Super Admin', 'Active')
+('Aman Yadav', 'admin@amanenterprise.in', 'scrypt:32768:8:1$8110c0Zdn1pbxEBc$95a390ffa0fc5c3c8c17f9108adf627f1cbe67e2d594cf01674b213877f381ae31d6fac13e2749d8441ad612307fa685e7d1e9add9101c14433a9081f79eb9d7', 'Super Admin', 'Active')
 ON DUPLICATE KEY UPDATE email = email;
 
 -- ============ SAMPLE SERVICES ============

@@ -18,7 +18,7 @@
 <body class="admin-body">
 <div class="d-flex">
   <div class="admin-sidebar" style="width:260px; flex-shrink:0;">
-    <div class="brand"><i class="fa-solid fa-truck-crane me-2"></i>AMAN<span>.</span>ADMIN</div>
+    <div class="brand"><i class="fa-solid fa-truck-crane me-2"></i><span>.</span>ADMIN</div>
     <a href="{{ url_for('admin.dashboard') }}" class="{{ 'active' if request.endpoint=='admin.dashboard' }}"><i class="fa-solid fa-gauge"></i> Dashboard</a>
     <a href="{{ url_for('admin.services_list') }}" class="{{ 'active' if request.endpoint and 'services' in request.endpoint }}"><i class="fa-solid fa-gears"></i> Services</a>
     <a href="{{ url_for('admin.equipment_list') }}" class="{{ 'active' if request.endpoint and 'equipment' in request.endpoint }}"><i class="fa-solid fa-truck-crane"></i> Equipment</a>
