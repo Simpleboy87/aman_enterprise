@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <style>
 @media (max-width: 991px) {
-  .admin-sidebar { position: fixed; left: -260px; top: 0; width: 260px; height: 100%; z-index: 1030; transition: left 0.3s ease; overflow-y:auto; }
+  .admin-sidebar { position: fixed; left: -260px; top: 0; width: 260px; height: 100%; z-index: 1200; transition: left 0.3s ease; overflow-y:auto; }
   .admin-sidebar.show-mobile { left: 0; }
 }
 </style>
