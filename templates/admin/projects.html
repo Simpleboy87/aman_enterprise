@@ -1,80 +1,477 @@
+
+
+
+
+
+
 {% extends "admin/base.html" %}
+
 {% block title %}Projects{% endblock %}
 {% block page_title %}Manage Projects{% endblock %}
+
 {% block admin_content %}
 
 <div class="d-flex justify-content-end mb-3">
-  <button class="btn btn-primary-industrial" data-bs-toggle="modal" data-bs-target="#addProjectModal"><i class="fa-solid fa-plus me-1"></i> Add Project</button>
+    <button
+        type="button"
+        class="btn btn-primary-industrial"
+        data-bs-toggle="modal"
+        data-bs-target="#addProjectModal">
+        <i class="fa-solid fa-plus me-1"></i>
+        Add Project
+    </button>
 </div>
 
 <div class="card-industrial">
-  <div class="card-body">
-    <div class="table-responsive">
-      <table class="table table-industrial align-middle">
-        <thead><tr><th>Image</th><th>Name</th><th>Location</th><th>Type</th><th>Date</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
-        <tbody>
-          {% for p in projects %}
-          <tr>
-            <td><img src="{{ p.image or 'https://via.placeholder.com/50' }}" class="table-thumb"></td>
-            <td class="fw-semibold">{{ p.name }}</td>
-            <td>{{ p.location }}</td>
-            <td>{{ p.project_type }}</td>
-            <td class="small">{{ p.project_date.strftime('%d %b %Y') if p.project_date else '-' }}</td>
-            <td><span class="status-badge {{ 'status-active' if p.status=='Active' else 'status-inactive' }}">{{ p.status }}</span></td>
-            <td class="text-end">
-              <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#editProjectModal{{ p.id }}"><i class="fa-solid fa-pen"></i></button>
-              <form action="{{ url_for('admin.projects_toggle', item_id=p.id) }}" method="POST" class="d-inline">
-                <button class="btn btn-sm btn-outline-warning" type="submit"><i class="fa-solid fa-power-off"></i></button>
-              </form>
-              <form action="{{ url_for('admin.projects_delete', item_id=p.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this project?');">
-                <button class="btn btn-sm btn-outline-danger" type="submit"><i class="fa-solid fa-trash"></i></button>
-              </form>
-            </td>
-          </tr>
+    <div class="card-body">
 
-          <div class="modal fade" id="editProjectModal{{ p.id }}" tabindex="-1">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <form action="{{ url_for('admin.projects_edit', item_id=p.id) }}" method="POST" enctype="multipart/form-data">
-                  <div class="modal-header"><h5 class="modal-title">Edit Project</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-                  <div class="modal-body">
-                    <div class="mb-3"><label class="form-label">Project Name</label><input type="text" name="name" class="form-control" value="{{ p.name }}" required></div>
-                    <div class="mb-3"><label class="form-label">Location</label><input type="text" name="location" class="form-control" value="{{ p.location }}"></div>
-                    <div class="mb-3"><label class="form-label">Project Type</label><input type="text" name="project_type" class="form-control" value="{{ p.project_type }}"></div>
-                    <div class="mb-3"><label class="form-label">Description</label><textarea name="description" class="form-control" rows="2">{{ p.description }}</textarea></div>
-                    <div class="mb-3"><label class="form-label">Project Date</label><input type="date" name="project_date" class="form-control" value="{{ p.project_date }}"></div>
-                    <div class="mb-3"><label class="form-label">Image (leave blank to keep current)</label><input type="file" name="image" class="form-control"></div>
-                  </div>
-                  <div class="modal-footer"><button class="btn btn-primary-industrial" type="submit">Save Changes</button></div>
-                </form>
-              </div>
-            </div>
-          </div>
-          {% else %}
-          <tr><td colspan="7" class="text-center text-muted">No projects added yet.</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
+        <div class="table-responsive">
+            <table class="table table-industrial align-middle">
 
-<div class="modal fade" id="addProjectModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form action="{{ url_for('admin.projects_add') }}" method="POST" enctype="multipart/form-data">
-        <div class="modal-header"><h5 class="modal-title">Add Project</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-        <div class="modal-body">
-          <div class="mb-3"><label class="form-label">Project Name</label><input type="text" name="name" class="form-control" required></div>
-          <div class="mb-3"><label class="form-label">Location</label><input type="text" name="location" class="form-control"></div>
-          <div class="mb-3"><label class="form-label">Project Type</label><input type="text" name="project_type" class="form-control" placeholder="Construction / Industrial / Infrastructure"></div>
-          <div class="mb-3"><label class="form-label">Description</label><textarea name="description" class="form-control" rows="2"></textarea></div>
-          <div class="mb-3"><label class="form-label">Project Date</label><input type="date" name="project_date" class="form-control"></div>
-          <div class="mb-3"><label class="form-label">Image</label><input type="file" name="image" class="form-control"></div>
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Location</th>
+                        <th>Type</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for p in projects %}
+
+                    <tr>
+
+                        <td>
+                            <img
+                                src="{{ p.image or 'https://via.placeholder.com/50' }}"
+                                class="table-thumb"
+                                alt="{{ p.name }}">
+                        </td>
+
+                        <td class="fw-semibold">
+                            {{ p.name }}
+                        </td>
+
+                        <td>
+                            {{ p.location or '-' }}
+                        </td>
+
+                        <td>
+                            {{ p.project_type or '-' }}
+                        </td>
+
+                        <td class="small">
+                            {{ p.project_date.strftime('%d %b %Y') if p.project_date else '-' }}
+                        </td>
+
+                        <td>
+                            <span class="status-badge {{ 'status-active' if p.status == 'Active' else 'status-inactive' }}">
+                                {{ p.status }}
+                            </span>
+                        </td>
+
+                        <td class="text-end">
+
+                            <!-- Edit -->
+                            <button
+                                type="button"
+                                class="btn btn-sm btn-outline-secondary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#editProjectModal{{ p.id }}"
+                                title="Edit">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+
+                            <!-- Active / Inactive -->
+                            <form
+                                action="{{ url_for('admin.projects_toggle', item_id=p.id) }}"
+                                method="POST"
+                                class="d-inline">
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-sm btn-outline-warning"
+                                    title="Change Status">
+                                    <i class="fa-solid fa-power-off"></i>
+                                </button>
+
+                            </form>
+
+                            <!-- Delete -->
+                            <form
+                                action="{{ url_for('admin.projects_delete', item_id=p.id) }}"
+                                method="POST"
+                                class="d-inline"
+                                onsubmit="return confirm('Delete this project?');">
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-sm btn-outline-danger"
+                                    title="Delete">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            No projects added yet.
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
         </div>
-        <div class="modal-footer"><button class="btn btn-primary-industrial" type="submit">Add Project</button></div>
-      </form>
+
     </div>
-  </div>
 </div>
+
+
+<!-- ================================================= -->
+<!-- EDIT PROJECT MODALS -->
+<!-- ================================================= -->
+
+{% for p in projects %}
+
+<div
+    class="modal fade"
+    id="editProjectModal{{ p.id }}"
+    tabindex="-1"
+    aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <form
+                action="{{ url_for('admin.projects_edit', item_id=p.id) }}"
+                method="POST"
+                enctype="multipart/form-data">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+                        <i class="fa-solid fa-pen me-2"></i>
+                        Edit Project
+                    </h5>
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <!-- Project Name -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Project Name
+                        </label>
+
+                        <input
+                            type="text"
+                            name="name"
+                            class="form-control"
+                            value="{{ p.name }}"
+                            required>
+
+                    </div>
+
+
+                    <!-- Location -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Location
+                        </label>
+
+                        <input
+                            type="text"
+                            name="location"
+                            class="form-control"
+                            value="{{ p.location or '' }}">
+
+                    </div>
+
+
+                    <!-- Project Type -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Project Type
+                        </label>
+
+                        <input
+                            type="text"
+                            name="project_type"
+                            class="form-control"
+                            value="{{ p.project_type or '' }}"
+                            placeholder="Construction / Industrial / Infrastructure">
+
+                    </div>
+
+
+                    <!-- Description -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Description
+                        </label>
+
+                        <textarea
+                            name="description"
+                            class="form-control"
+                            rows="4">{{ p.description or '' }}</textarea>
+
+                    </div>
+
+
+                    <!-- Project Date -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Project Date
+                        </label>
+
+                        <input
+                            type="date"
+                            name="project_date"
+                            class="form-control"
+                            value="{{ p.project_date.strftime('%Y-%m-%d') if p.project_date else '' }}">
+
+                    </div>
+
+
+                    <!-- Image -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Image
+                        </label>
+
+                        <input
+                            type="file"
+                            name="image"
+                            class="form-control"
+                            accept="image/*">
+
+                        <div class="form-text">
+                            Leave blank to keep the current image.
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary-industrial">
+                        <i class="fa-solid fa-save me-1"></i>
+                        Save Changes
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+
+<!-- ================================================= -->
+<!-- ADD PROJECT MODAL -->
+<!-- ================================================= -->
+
+<div
+    class="modal fade"
+    id="addProjectModal"
+    tabindex="-1"
+    aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <form
+                action="{{ url_for('admin.projects_add') }}"
+                method="POST"
+                enctype="multipart/form-data">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+                        <i class="fa-solid fa-plus me-2"></i>
+                        Add Project
+                    </h5>
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                    </button>
+
+                </div>
+
+
+                <div class="modal-body">
+
+                    <!-- Project Name -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Project Name
+                        </label>
+
+                        <input
+                            type="text"
+                            name="name"
+                            class="form-control"
+                            placeholder="Enter project name"
+                            required>
+
+                    </div>
+
+
+                    <!-- Location -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Location
+                        </label>
+
+                        <input
+                            type="text"
+                            name="location"
+                            class="form-control"
+                            placeholder="Enter location">
+
+                    </div>
+
+
+                    <!-- Project Type -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Project Type
+                        </label>
+
+                        <input
+                            type="text"
+                            name="project_type"
+                            class="form-control"
+                            placeholder="Construction / Industrial / Infrastructure">
+
+                    </div>
+
+
+                    <!-- Description -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Description
+                        </label>
+
+                        <textarea
+                            name="description"
+                            class="form-control"
+                            rows="4"
+                            placeholder="Enter project description"></textarea>
+
+                    </div>
+
+
+                    <!-- Project Date -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Project Date
+                        </label>
+
+                        <input
+                            type="date"
+                            name="project_date"
+                            class="form-control">
+
+                    </div>
+
+
+                    <!-- Image -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Project Image
+                        </label>
+
+                        <input
+                            type="file"
+                            name="image"
+                            class="form-control"
+                            accept="image/*">
+
+                    </div>
+
+                </div>
+
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary-industrial">
+                        <i class="fa-solid fa-plus me-1"></i>
+                        Add Project
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
 {% endblock %}

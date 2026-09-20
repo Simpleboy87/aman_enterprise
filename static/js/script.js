@@ -133,17 +133,14 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   });
+const sidebarToggle = document.getElementById('sidebarToggle');
+const adminSidebar = document.querySelector('.admin-sidebar');
 
-  // ===== Sidebar toggle (mobile admin) =====
-  const sidebarToggle = document.getElementById('sidebarToggle');
-  const adminSidebar = document.querySelector('.admin-sidebar');
-  if (sidebarToggle && adminSidebar) {
+if (sidebarToggle && adminSidebar) {
     sidebarToggle.addEventListener('click', () => {
-      adminSidebar.classList.toggle('show-mobile');
+        adminSidebar.classList.toggle('show-mobile');
     });
-  }
-});
-
+}
 document.addEventListener('DOMContentLoaded', function () {
   const navLinks = document.querySelectorAll('#navMain .nav-link, #navMain .btn-quote');
 

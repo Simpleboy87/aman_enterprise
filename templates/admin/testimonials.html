@@ -1,85 +1,473 @@
+
+
 {% extends "admin/base.html" %}
+
 {% block title %}Testimonials{% endblock %}
 {% block page_title %}Manage Testimonials{% endblock %}
+
 {% block admin_content %}
 
 <div class="d-flex justify-content-end mb-3">
-  <button class="btn btn-primary-industrial" data-bs-toggle="modal" data-bs-target="#addTestimonialModal"><i class="fa-solid fa-plus me-1"></i> Add Testimonial</button>
+    <button
+        type="button"
+        class="btn btn-primary-industrial"
+        data-bs-toggle="modal"
+        data-bs-target="#addTestimonialModal">
+        <i class="fa-solid fa-plus me-1"></i>
+        Add Testimonial
+    </button>
 </div>
 
 <div class="card-industrial">
-  <div class="card-body">
-    <div class="table-responsive">
-      <table class="table table-industrial align-middle">
-        <thead><tr><th>Customer</th><th>Company</th><th>Testimonial</th><th>Rating</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
-        <tbody>
-          {% for t in testimonials %}
-          <tr>
-            <td class="fw-semibold">{{ t.customer_name }}</td>
-            <td>{{ t.company }}</td>
-            <td class="small text-muted">{{ t.testimonial[:50] }}{% if t.testimonial|length > 50 %}...{% endif %}</td>
-            <td>{% for i in range(t.rating) %}<i class="fa-solid fa-star text-accent"></i>{% endfor %}</td>
-            <td><span class="status-badge {{ 'status-active' if t.status=='Active' else 'status-inactive' }}">{{ t.status }}</span></td>
-            <td class="text-end">
-              <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#editTestimonialModal{{ t.id }}"><i class="fa-solid fa-pen"></i></button>
-              <form action="{{ url_for('admin.testimonials_toggle', item_id=t.id) }}" method="POST" class="d-inline">
-                <button class="btn btn-sm btn-outline-warning" type="submit"><i class="fa-solid fa-eye-slash"></i></button>
-              </form>
-              <form action="{{ url_for('admin.testimonials_delete', item_id=t.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this testimonial?');">
-                <button class="btn btn-sm btn-outline-danger" type="submit"><i class="fa-solid fa-trash"></i></button>
-              </form>
-            </td>
-          </tr>
+    <div class="card-body">
 
-          <div class="modal fade" id="editTestimonialModal{{ t.id }}" tabindex="-1">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <form action="{{ url_for('admin.testimonials_edit', item_id=t.id) }}" method="POST" enctype="multipart/form-data">
-                  <div class="modal-header"><h5 class="modal-title">Edit Testimonial</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-                  <div class="modal-body">
-                    <div class="mb-3"><label class="form-label">Customer Name</label><input type="text" name="customer_name" class="form-control" value="{{ t.customer_name }}" required></div>
-                    <div class="mb-3"><label class="form-label">Company</label><input type="text" name="company" class="form-control" value="{{ t.company }}"></div>
-                    <div class="mb-3"><label class="form-label">Testimonial</label><textarea name="testimonial" class="form-control" rows="3" required>{{ t.testimonial }}</textarea></div>
-                    <div class="mb-3"><label class="form-label">Rating</label>
-                      <select name="rating" class="form-select">
-                        {% for r in [5,4,3,2,1] %}<option value="{{ r }}" {% if t.rating==r %}selected{% endif %}>{{ r }} Star{{ 's' if r>1 }}</option>{% endfor %}
-                      </select>
-                    </div>
-                    <div class="mb-3"><label class="form-label">Photo (leave blank to keep current)</label><input type="file" name="photo" class="form-control"></div>
-                  </div>
-                  <div class="modal-footer"><button class="btn btn-primary-industrial" type="submit">Save Changes</button></div>
-                </form>
-              </div>
-            </div>
-          </div>
-          {% else %}
-          <tr><td colspan="6" class="text-center text-muted">No testimonials added yet.</td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
+        <div class="table-responsive">
+            <table class="table table-industrial align-middle">
 
-<div class="modal fade" id="addTestimonialModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form action="{{ url_for('admin.testimonials_add') }}" method="POST" enctype="multipart/form-data">
-        <div class="modal-header"><h5 class="modal-title">Add Testimonial</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-        <div class="modal-body">
-          <div class="mb-3"><label class="form-label">Customer Name</label><input type="text" name="customer_name" class="form-control" required></div>
-          <div class="mb-3"><label class="form-label">Company</label><input type="text" name="company" class="form-control"></div>
-          <div class="mb-3"><label class="form-label">Testimonial</label><textarea name="testimonial" class="form-control" rows="3" required></textarea></div>
-          <div class="mb-3"><label class="form-label">Rating</label>
-            <select name="rating" class="form-select">
-              <option value="5">5 Stars</option><option value="4">4 Stars</option><option value="3">3 Stars</option><option value="2">2 Stars</option><option value="1">1 Star</option>
-            </select>
-          </div>
-          <div class="mb-3"><label class="form-label">Photo</label><input type="file" name="photo" class="form-control"></div>
+                <thead>
+                    <tr>
+                        <th>Photo</th>
+                        <th>Customer</th>
+                        <th>Company</th>
+                        <th>Rating</th>
+                        <th>Status</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for t in testimonials %}
+
+                    <tr>
+
+                        <td>
+                            {% if t.photo %}
+                                <img
+                                    src="{{ t.photo }}"
+                                    class="table-thumb"
+                                    alt="{{ t.customer_name }}">
+                            {% else %}
+                                <div class="testimonial-avatar">
+                                    {{ t.customer_name[0]|upper }}
+                                </div>
+                            {% endif %}
+                        </td>
+
+                        <td class="fw-semibold">
+                            {{ t.customer_name }}
+                        </td>
+
+                        <td>
+                            {{ t.company or '-' }}
+                        </td>
+
+                        <td>
+                            {% for i in range(t.rating|int) %}
+                                <i class="fa-solid fa-star text-warning"></i>
+                            {% endfor %}
+                        </td>
+
+                        <td>
+                            <span class="status-badge {{ 'status-active' if t.status == 'Active' else 'status-inactive' }}">
+                                {{ t.status }}
+                            </span>
+                        </td>
+
+                        <td class="text-end">
+
+                            <!-- Edit -->
+                            <button
+                                type="button"
+                                class="btn btn-sm btn-outline-secondary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#editTestimonialModal{{ t.id }}"
+                                title="Edit">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+
+                            <!-- Toggle -->
+                            <form
+                                action="{{ url_for('admin.testimonials_toggle', item_id=t.id) }}"
+                                method="POST"
+                                class="d-inline">
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-sm btn-outline-warning"
+                                    title="Change Status">
+                                    <i class="fa-solid fa-power-off"></i>
+                                </button>
+
+                            </form>
+
+                            <!-- Delete -->
+                            <form
+                                action="{{ url_for('admin.testimonials_delete', item_id=t.id) }}"
+                                method="POST"
+                                class="d-inline"
+                                onsubmit="return confirm('Delete this testimonial?');">
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-sm btn-outline-danger"
+                                    title="Delete">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            No testimonials added yet.
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
         </div>
-        <div class="modal-footer"><button class="btn btn-primary-industrial" type="submit">Add Testimonial</button></div>
-      </form>
+
     </div>
-  </div>
 </div>
+
+
+<!-- ================================================= -->
+<!-- EDIT TESTIMONIAL MODALS -->
+<!-- ================================================= -->
+
+{% for t in testimonials %}
+
+<div
+    class="modal fade"
+    id="editTestimonialModal{{ t.id }}"
+    tabindex="-1"
+    aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <form
+                action="{{ url_for('admin.testimonials_edit', item_id=t.id) }}"
+                method="POST"
+                enctype="multipart/form-data">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+                        <i class="fa-solid fa-pen me-2"></i>
+                        Edit Testimonial
+                    </h5>
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                    </button>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <!-- Customer Name -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Customer Name
+                        </label>
+
+                        <input
+                            type="text"
+                            name="customer_name"
+                            class="form-control"
+                            value="{{ t.customer_name }}"
+                            required>
+
+                    </div>
+
+
+                    <!-- Company -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Company
+                        </label>
+
+                        <input
+                            type="text"
+                            name="company"
+                            class="form-control"
+                            value="{{ t.company or '' }}"
+                            placeholder="Company name">
+
+                    </div>
+
+
+                    <!-- Testimonial -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Testimonial
+                        </label>
+
+                        <textarea
+                            name="testimonial"
+                            class="form-control"
+                            rows="5"
+                            required>{{ t.testimonial }}</textarea>
+
+                    </div>
+
+
+                    <!-- Rating -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Rating
+                        </label>
+
+                        <select
+                            name="rating"
+                            class="form-select">
+
+                            <option value="5" {% if t.rating|int == 5 %}selected{% endif %}>
+                                5 Stars
+                            </option>
+
+                            <option value="4" {% if t.rating|int == 4 %}selected{% endif %}>
+                                4 Stars
+                            </option>
+
+                            <option value="3" {% if t.rating|int == 3 %}selected{% endif %}>
+                                3 Stars
+                            </option>
+
+                            <option value="2" {% if t.rating|int == 2 %}selected{% endif %}>
+                                2 Stars
+                            </option>
+
+                            <option value="1" {% if t.rating|int == 1 %}selected{% endif %}>
+                                1 Star
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Photo -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Customer Photo
+                        </label>
+
+                        <input
+                            type="file"
+                            name="photo"
+                            class="form-control"
+                            accept="image/*">
+
+                        <div class="form-text">
+                            Leave blank to keep the current photo.
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary-industrial">
+                        <i class="fa-solid fa-save me-1"></i>
+                        Save Changes
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+
+<!-- ================================================= -->
+<!-- ADD TESTIMONIAL MODAL -->
+<!-- ================================================= -->
+
+<div
+    class="modal fade"
+    id="addTestimonialModal"
+    tabindex="-1"
+    aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <form
+                action="{{ url_for('admin.testimonials_add') }}"
+                method="POST"
+                enctype="multipart/form-data">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+                        <i class="fa-solid fa-plus me-2"></i>
+                        Add Testimonial
+                    </h5>
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+                    </button>
+
+                </div>
+
+
+                <div class="modal-body">
+
+                    <!-- Customer Name -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Customer Name
+                        </label>
+
+                        <input
+                            type="text"
+                            name="customer_name"
+                            class="form-control"
+                            placeholder="Enter customer name"
+                            required>
+
+                    </div>
+
+
+                    <!-- Company -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Company
+                        </label>
+
+                        <input
+                            type="text"
+                            name="company"
+                            class="form-control"
+                            placeholder="Company name">
+
+                    </div>
+
+
+                    <!-- Testimonial -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Testimonial
+                        </label>
+
+                        <textarea
+                            name="testimonial"
+                            class="form-control"
+                            rows="5"
+                            placeholder="Enter customer testimonial"
+                            required></textarea>
+
+                    </div>
+
+
+                    <!-- Rating -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Rating
+                        </label>
+
+                        <select
+                            name="rating"
+                            class="form-select">
+
+                            <option value="5" selected>5 Stars</option>
+                            <option value="4">4 Stars</option>
+                            <option value="3">3 Stars</option>
+                            <option value="2">2 Stars</option>
+                            <option value="1">1 Star</option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Photo -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Customer Photo
+                        </label>
+
+                        <input
+                            type="file"
+                            name="photo"
+                            class="form-control"
+                            accept="image/*">
+
+                    </div>
+
+                </div>
+
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary-industrial">
+                        <i class="fa-solid fa-plus me-1"></i>
+                        Add Testimonial
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
 {% endblock %}

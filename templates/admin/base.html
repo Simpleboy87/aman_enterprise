@@ -35,7 +35,12 @@
   <div class="flex-grow-1" style="min-width:0;">
     <div class="admin-topbar">
       <div class="d-flex align-items-center gap-3">
-        <button class="btn btn-sm btn-outline-secondary d-lg-none" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
+        <button type="button"
+        class="btn btn-sm btn-outline-secondary d-lg-none"
+        id="sidebarToggle"
+        onclick="document.querySelector('.admin-sidebar').classList.toggle('show-mobile');">
+    <i class="fa-solid fa-bars"></i>
+</button>
         <h5 class="mb-0">{% block page_title %}Dashboard{% endblock %}</h5>
       </div>
       <div class="d-flex align-items-center gap-2">
