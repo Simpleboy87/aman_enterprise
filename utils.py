@@ -5,6 +5,8 @@ from functools import wraps
 
 from flask import session, redirect, url_for, flash, current_app
 from werkzeug.utils import secure_filename
+import cloudinary
+import cloudinary.uploader
 
 
 def login_required(f):
@@ -36,20 +38,38 @@ def allowed_file(filename):
 
 
 def save_upload(file_storage, prefix="img"):
-    """Validate and save an uploaded image. Returns the public path or None."""
+    """Validate and upload an image to Cloudinary. Returns the secure URL or None."""
     if not file_storage or file_storage.filename == "":
         return None
+
     if not allowed_file(file_storage.filename):
         raise ValueError("Invalid file type. Only JPG, JPEG, PNG and WebP are allowed.")
 
-    safe_name = secure_filename(file_storage.filename)
-    ext = safe_name.rsplit(".", 1)[-1].lower()
-    unique_name = f"{prefix}-{uuid.uuid4().hex[:12]}.{ext}"
-    upload_dir = current_app.config["UPLOAD_FOLDER"]
-    os.makedirs(upload_dir, exist_ok=True)
-    file_path = os.path.join(upload_dir, unique_name)
-    file_storage.save(file_path)
-    return f"/static/uploads/{unique_name}"
+    cloudinary.config(
+        cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+        api_key=os.getenv("CLOUDINARY_API_KEY"),
+        api_secret=os.getenv("CLOUDINARY_API_SECRET"),
+        secure=True
+    )
+
+    if not all([
+        os.getenv("CLOUDINARY_CLOUD_NAME"),
+        os.getenv("CLOUDINARY_API_KEY"),
+        os.getenv("CLOUDINARY_API_SECRET")
+    ]):
+        raise ValueError("Cloudinary configuration is missing.")
+
+    try:
+        result = cloudinary.uploader.upload(
+            file_storage,
+            folder="aman_enterprise",
+            public_id=f"{prefix}-{uuid.uuid4().hex[:12]}",
+            resource_type="image"
+        )
+    except Exception as e:
+        raise ValueError(f"Image upload failed: {e}")
+
+    return result.get("secure_url")
 
 
 def is_valid_email(email):
