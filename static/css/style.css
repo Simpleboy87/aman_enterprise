@@ -1465,3 +1465,46 @@ a { text-decoration: none; }
     color: #101820 !important;
 }
 
+
+/* ===== ADMIN MODAL DESKTOP + MOBILE FOOTER FIX ===== */
+
+.admin-body .modal-dialog-scrollable .modal-content {
+    display: flex !important;
+    flex-direction: column !important;
+    max-height: 90vh !important;
+}
+
+.admin-body .modal-dialog-scrollable .modal-body {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+}
+
+.admin-body .modal-footer {
+    display: flex !important;
+    flex-shrink: 0 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative;
+    z-index: 10;
+    background: #fff;
+}
+
+@media (max-width: 575.98px) {
+    .admin-body .modal-dialog-scrollable .modal-content {
+        max-height: 95vh !important;
+    }
+
+    .admin-body .modal-dialog-scrollable .modal-body {
+        max-height: none !important;
+        overflow-y: auto !important;
+    }
+
+    .admin-body .modal-footer {
+        position: sticky !important;
+        bottom: 0 !important;
+        background: #fff !important;
+        z-index: 20 !important;
+    }
+}
+
